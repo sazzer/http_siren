@@ -1,20 +1,19 @@
 #[cfg(feature = "axum")]
 mod axum;
 
-use http::{header::HeaderName, HeaderValue, StatusCode};
+use http::{HeaderMap, StatusCode};
 use serde::Serialize;
 
 use super::Document;
 
 /// Wrapper around an HTTP Siren response.
-#[allow(dead_code)] // These fields are used by the various features.
 pub struct Response<T>
 where
     T: Serialize,
 {
-    status_code: StatusCode,
-    headers:     Vec<(HeaderName, HeaderValue)>,
-    document:    Document<T>,
+    pub status_code: StatusCode,
+    pub headers:     HeaderMap,
+    pub document:    Document<T>,
 }
 
 impl<T> Response<T>
@@ -31,7 +30,7 @@ where
     {
         Self {
             status_code: StatusCode::OK,
-            headers:     vec![],
+            headers:     HeaderMap::new(),
             document:    document.into(),
         }
     }
@@ -47,16 +46,22 @@ where
         self
     }
 
-    /// Specify an HTTP Header for the response.
+    /// Specify an HTTP Header to include in the response.
     ///
     /// # Parameters
-    /// - `header` - The header.
+    /// - `header` - The header to include.
     #[must_use]
+    #[allow(clippy::needless_pass_by_value)] // Making this a reference just makes the caller slightly more awkward for no benefit
     pub fn with_header<H>(mut self, header: H) -> Self
     where
-        H: Into<(HeaderName, HeaderValue)>,
+        H: headers_core::Header,
     {
-        self.headers.push(header.into());
+        let mut values = vec![];
+        header.encode(&mut values);
+
+        for value in values {
+            self.headers.append(H::name(), value);
+        }
 
         self
     }
