@@ -1,0 +1,27 @@
+[package]
+name = "http_siren"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Support for Siren responses in HTTP APIs"
+homepage = "https://github.com/sazzer/http_siren/"
+repository = "https://github.com/sazzer/http_siren/"
+readme = "README.md"
+keywords = ["siren", "http", "hypermedia", "hateoas"]
+categories = ["web-programming::http-server", "api-bindings"]
+
+[dependencies]
+axum = { version = "0.5.11", optional = true}
+derive_more = "0.99.17"
+http = "0.2.8"
+serde = { version = "1.0.137", features = ["derive"] }
+serde_json = { version = "1.0.81", features = ["preserve_order"] }
+
+[dev-dependencies]
+assert2 = "0.3.6"
+hyper = { version = "0.14.20", features = ["full"] }
+insta = "1.15.0"
+tokio = { version = "1.19.2", features = ["full"] }
+
+[features]
+axum = ["dep:axum"]
