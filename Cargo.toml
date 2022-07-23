@@ -1,6 +1,6 @@
 [package]
 name = "http_siren"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "MIT"
 description = "Support for Siren responses in HTTP APIs"
